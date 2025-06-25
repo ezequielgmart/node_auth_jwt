@@ -1,0 +1,160 @@
+<html>
+    <head>
+        <title>API Node With JWT Auth</title>
+    </head>
+    <body>
+        
+        <div>
+            <% if (typeof username !=='undefined') {%>
+                <div>
+                    <h2>Hello <%= username %> </h2>
+                    <h2>You're on the Admin panel</h2>
+                    <button id="close-session">Logout</button>
+                </div>
+            <% } %>
+            
+            <% if (typeof username ==='undefined') {%>
+                <div class="form-container">
+                    <form id="login-form">
+                        <h2>Login</h2>
+                        <label 
+                        for="login-username">
+                        Username
+                        <label>
+
+                        <input 
+                        type="text" 
+                        id="login-username" 
+                        name="username" 
+                        required>    
+
+                        <label 
+                        for="login-username">
+                        Password
+                        </label>                   
+                        <input 
+                        type="password" 
+                        id="login-password" 
+                        name="password" 
+                        required>
+
+                        <button type="submit">Login</button>
+                    </form>
+                </div>
+
+                <div class="form-container">
+                    <form id="register-form">
+                        <h2>Register now!</h2>
+                        <label for="register-username">Username<label>
+
+                        <input type="text" id="register-username" name="username" required>    
+                        <label for="register-password">Password</label> 
+                        <input type="password" id="register-password" name="password" required> 
+                        <label for="register-confirm-password">Confirm password</label> 
+                        <input type="password" id="register-confirm-password" name="confirmPassword" required>
+
+                        <button type="submit">Register</button>
+                    </form>
+                </div>
+            <% } %>
+        </div>
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        // The logout button may or may not exist depending on if the user is logged in.
+        const logoutButton = document.getElementById('close-session'); 
+
+        // Add event listener for login form if it exists
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const username = document.getElementById('login-username').value;
+                const password = document.getElementById('login-password').value;
+
+                fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                })
+                .then(res => {
+                    if (res.ok) {
+                        setTimeout(() => {
+                            window.location.href = '/'; // Or '/protected' if that's your protected area
+                        }, 2000);
+                    } else {
+                        alert("Error logging in");
+                    }
+                })
+                .catch(error => {
+                    console.error('Login fetch error:', error);
+                    alert('An error occurred during login. Please try again.');
+                });
+            });
+        }
+
+        // Add event listener for register form if it exists
+        if (registerForm) {
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const username = document.getElementById('register-username').value;
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm-password').value;
+
+                if (password !== confirmPassword) {
+                    alert("Passwords do not match");
+                    return;
+                }
+
+                fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                })
+                .then(res => {
+                    if (res.ok) {
+                        alert("Registration successful! You will be redirected.");
+                        setTimeout(() => {
+                            window.location.href = '/'; // Or '/protected'
+                        }, 2000);
+                    } else {
+                        alert("Error registering user");
+                    }
+                })
+                .catch(error => {
+                    console.error('Register fetch error:', error);
+                    alert('An error occurred during registration. Please try again.');
+                });
+            });
+        }
+
+        // ONLY add event listener for logout button IF IT EXISTS in the DOM
+        if (logoutButton) { 
+            logoutButton.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                fetch('/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    console.log(res);
+                    window.location.href = '/'; // Redirect to home after logout
+                })
+                .catch(error => {
+                    console.error('Logout fetch error:', error);
+                    alert('An error occurred during logout. Please try again.');
+                });
+            });
+        }
+    </script>
+    </body>
+</html>
+
