@@ -1,12 +1,9 @@
 
 import crypto from "node:crypto";
-
-import dbLocal from "db-local";
+import { SALT_ROUNDS } from "../src/config/index.js";
 import bcrypt from "bcrypt";
 
-import { SALT_ROUNDS } from "./config.js";
-
-const { Schema } = new dbLocal({ path: './db'})
+import { Schema } from "../src/config/db.js";
 
 const User = Schema('User', {
     _id: { type: String, required: true},

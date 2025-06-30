@@ -1,8 +1,9 @@
 import express from 'express'
 import jwt from 'jsonwebtoken'
 import cookieParser from 'cookie-parser'
-import { PORT, SECRET_JWT_KEY } from './config.js'
-import { UserRepository } from './user-repository.js'
+
+import { PORT, SECRET_JWT_KEY } from './config/index.js'
+import { UserRepository } from '../legacy/user-repository.js'
 
 const app = express()
 
@@ -25,12 +26,6 @@ app.use((req, res, next) =>{
     next() // go to the next path / middleware 
 })
 
-app.get('/', (req, res) => {
-    const { user } = req.session
-    res.render('index', user)
-
-  
-});
 // endpoints
 app.post('/login', async (req, res) => {
 
@@ -39,9 +34,7 @@ app.post('/login', async (req, res) => {
     try {
         const user = await UserRepository.login({ username, password })
 
-        const token = jwt.sign({ id:user._id, username: user.username }, SECRET_JWT_KEY, {
-            expiresIn:'1h'
-        })
+        const token = createToken(user)
 
         res
             .cookie('access_token', token, {
@@ -51,16 +44,27 @@ app.post('/login', async (req, res) => {
                 maxAge: 1000 * 60 * 60 // 1h valid only
             })
             .send(token)
+    
     }catch (error){
         res.status(400).send(error.message)
     }
 
 })
 
+function createToken(user){
+
+    
+    const token = jwt.sign({ id:user._id, username: user.username }, SECRET_JWT_KEY, {
+        expiresIn:'1h'
+    })
+
+    return token
+
+}
+
 app.post('/register', async (req, res) => {
     const { username, password } = req.body
 
-    console.log({ username, password })
 
     try {
         const id = await UserRepository.create({ username, password })
@@ -90,6 +94,13 @@ app.post('/protected', (req, res) => {
       
 })
 
+
+app.get('/', (req, res) => {
+    const { user } = req.session
+    res.render('index', user)
+
+  
+});
 
 app.get('/protected', (req, res) => {
     const { user } = req.session

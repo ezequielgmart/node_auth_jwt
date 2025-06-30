@@ -1,7 +1,7 @@
 # User Authentication and JWT Example
 This project is a practical example demonstrating how to implement **user authentication** and **JSON Web Tokens (JWT)** in a web application with **protected views**. It provides a clear, concise foundation for understanding secure user management in Node.js applications using EJS for templating.
 
-## Technologies Used
+## STACK
 
 * HTML / CSS / JavaScript
 * [Node.js](https://nodejs.org/)

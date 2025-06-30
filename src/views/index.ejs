@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome!</title>
+        <style>
+            
+            body{
+                font-family: Arial, Helvetica, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: rgb(243, 242, 242);
+            }
+
+            .root{
+                width: 40%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+
+            .login-form-container, .register-form-container{
+                box-shadow: 4px -1px 5px 10px rgba(0,0,0,0.03);
+                -webkit-box-shadow: 4px -1px 5px 10px rgba(0,0,0,0.03);
+                -moz-box-shadow: 4px -1px 5px 10px rgba(0,0,0,0.03);
+                background-color: rgb(255, 255, 255);
+                width: 40%;
+                margin-left: auto;
+                margin-right: auto;
+                
+                margin-bottom: 5%;
+                padding: 1%;
+
+                
+                border-radius: 5px;
+            }
+
+            .login-form-container{
+                margin-top: 5%;
+
+            }
+
+
+            
+            .controller-container, .controller-container-btn-only{
+                padding: 1%;
+            }
+
+            .controller-container{
+                
+                margin-bottom: 2%;
+            }
+            .controller-container-btn-only{
+
+                width: 75%;
+                margin-left: auto;
+                margin-right: auto;
+                margin-bottom: 6%;
+            }
+
+
+            
+            .register-form-container{
+          
+
+            }
+
+            .btn-controller-submit-type{
+
+                background-color: rgba(9, 156, 34, 0.938);
+                border: 1px solid rgba(7, 146, 30, 0.938);
+                width: 100%;
+                padding: 1.5%;
+                border-radius: 3px;
+                color: aliceblue;
+                height: 2.5em;
+
+            }
+            
+            .btn-controller-submit-type:hover{
+
+                background-color: rgba(7, 146, 30, 0.938);
+                border: 1px solid rgba(7, 146, 30, 0.938);
+            }
+
+            .txt-controller,.password-controller{
+                outline-color: rgb(82, 163, 255);
+                width: 95%;
+                padding: 1%;
+                font-size: 1.0em;  
+                border: 1px solid rgb(206, 206, 206);
+
+            } 
+            .txt-controller{
+                height: 1.5em;
+
+
+            }
+            .password-controller{
+                height: 1.5em;
+  
+
+
+            }
+            
+            .form-title{
+                text-align: center;
+            }
+
+            label{
+                font-weight: bold;
+                font-size: 0.9em;
+            }
+        </style>
+    </head>
+    <body>
+        
+        <div>
+            <% if (typeof username !=='undefined') {%>
+                <div class="admin-panel-container">
+                    <h2>Hello <%= username %> </h2>
+                    <h2>You're on the Admin panel</h2>
+                    <button id="close-session">Logout</button>
+                </div>
+            <% } %>
+            
+            <% if (typeof username ==='undefined') {%>
+                <div class="root">
+                    <div class="login-form-container">
+                        <form id="login-form">
+                            <h2 class="form-title">Login</h2>
+                            <div class="controller-container">
+                                <label for="login-username">Username<label><br>
+                                <input class="txt-controller" type="text" id="login-username" name="username" required>   
+                            </div>
+                            <div class="controller-container">
+                                <label for="login-username">Password</label>    <br>           
+                                <input class="password-controller" type="password" id="login-password" name="password" required>
+                            </div>
+                            <div class="controller-container-btn-only">
+                                <button class='btn-controller-submit-type' type="submit">Login</button>
+                            </div> 
+                        </form>
+                    </div>
+
+                    <div class="register-form-container">
+                        <form id="register-form">
+                            <h2 class="form-title">Register now!</h2>
+                            <div class="controller-container">
+                                <label for="register-username">Username<label><br>
+                                <input class="txt-controller" type="text" id="register-username" name="username" required>  
+                            </div>
+                            <div class="controller-container">
+                                <label for="register-password">Password</label> <br>
+                                <input class="password-controller" type="password" id="register-password" name="password" required>  
+                            </div>
+                            <div class="controller-container">
+                                <label for="register-confirm-password">Confirm password</label> <br>
+                                <input class="password-controller" type="password" id="register-confirm-password" name="confirmPassword" required> 
+                            </div>
+                            <div class="controller-container-btn-only">
+                                <button class='btn-controller-submit-type' type="submit">Register</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            <% } %>
+        </div>
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        // The logout button may or may not exist depending on if the user is logged in.
+        const logoutButton = document.getElementById('close-session'); 
+
+        // Add event listener for login form if it exists
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const username = document.getElementById('login-username').value;
+                const password = document.getElementById('login-password').value;
+
+                fetch('api/v1/auth/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                })
+                .then(res => {
+                    if (res.ok) {
+                        setTimeout(() => {
+                            window.location.href = '/protected'; // Or '/protected' if that's your protected area
+                        }, 2000);
+                    } else {
+                        alert("Error logging in");
+                    }
+                })
+                .catch(error => {
+                    console.error('Login fetch error:', error);
+                    alert('An error occurred during login. Please try again.');
+                });
+            });
+        }
+
+        // Add event listener for register form if it exists
+        if (registerForm) {
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const username = document.getElementById('register-username').value;
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm-password').value;
+
+                if (password !== confirmPassword) {
+                    alert("Passwords do not match");
+                    return;
+                }
+
+                fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                })
+                .then(res => {
+                    if (res.ok) {
+                        alert("Registration successful! You will be redirected.");
+                        setTimeout(() => {
+                            window.location.href = '/protected'; // Or '/protected'
+                        }, 2000);
+                    } else {
+                        alert("Error registering user");
+                    }
+                })
+                .catch(error => {
+                    console.error('Register fetch error:', error);
+                    alert('An error occurred during registration. Please try again.');
+                });
+            });
+        }
+
+        // ONLY add event listener for logout button IF IT EXISTS in the DOM
+        if (logoutButton) { 
+            logoutButton.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                fetch('api/v1/auth/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    console.log(res);
+                    window.location.href = '/'; // Redirect to home after logout
+                })
+                .catch(error => {
+                    console.error('Logout fetch error:', error);
+                    alert('An error occurred during logout. Please try again.');
+                });
+            });
+        }
+    </script>
+    </body>
+</html>
+

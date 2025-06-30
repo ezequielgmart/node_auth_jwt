@@ -1,10 +1,10 @@
 {
   "name": "node_auth_jwt",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./src/server.js",
   "type": "module",
   "scripts": {
-    "dev": "node --watch index.js",
+    "dev": "node --watch ./src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
