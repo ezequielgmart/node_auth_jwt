@@ -20,7 +20,7 @@ export class AuthServices{
     static logout(res){
         
         res.clearCookie('access_token') // Clear the cookie
-        res.send("Logged out successfully") // Send a response
+        return true
 
     }
 

@@ -1,12 +1,12 @@
 
-// node:modules / dependencies
+//  dependencies
 import bcrypt from "bcrypt";
 
 // configs
 /* configs files should  be here */
 
 // utils 
-import { UserValidation } from "../../utils/userValidations.js";
+import { UserValidation } from "../../utils/UserValidations.js";
 
 // entity Models
 import { AuthEntityModel } from "./EntityAuth.js";
@@ -22,11 +22,11 @@ export class AuthRepository{
 
         const user = AuthEntityModel.findOne({ username })
 
-        if (!user) throw new Error('username does not exist')
+        if (!user) throw new Error('400')
 
         const isValid = await bcrypt.compare(password, user.password)     
         
-        if (!isValid) throw new Error('Incorrect password')
+        if (!isValid) throw new Error('400')
 
         // a fancy way to avoid present certaints fields on the front end
         const { password: _, ...publicUser } = user

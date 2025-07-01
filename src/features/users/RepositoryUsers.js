@@ -1,16 +1,16 @@
 
-// node:modules / dependencies
+// dependencies
 import crypto from "node:crypto";
 import bcrypt from "bcrypt";
 
 // configs
-import { SALT_ROUNDS } from "./src/config/index.js";
+import { SALT_ROUNDS } from "../../config/index.js";
 
 // utils 
-import { UserValidation } from "../../utils/userValidations.js";
+import { UserValidation } from "../../utils/UserValidations.js";
 
 // entity Models
-import { UserEntityModel } from "../../models/userEntity.js";
+import { UserEntityModel } from "./EntityUsers.js";
 
 export class UserRepository{
 
@@ -20,7 +20,7 @@ export class UserRepository{
         UserValidation.username(username)
         UserValidation.password(password)
             
-        // 2. asegurar username doesn't exist already
+        // 2.verify username doesn't exist already
         const user = UserEntityModel.findOne({ username })
         if (user) throw new Error("Username already exists")
 

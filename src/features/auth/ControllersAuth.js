@@ -21,14 +21,18 @@ export async function login(req, res) {
     
 
     } catch (error) {
-        console.error('Login error:', error);
-        res.status(400).json({ message: error.message }); // Send error message from validation
+        res.status(400).json({ message: "An error has occured" }); // Send error message from validation
     }
+
 }
     
 export function logout (req, res){
     
-    AuthServices.logout(res);
+    const response = AuthServices.logout(res);
+
+    if (response){
+        res.send(200)
+    }
 
 } 
 

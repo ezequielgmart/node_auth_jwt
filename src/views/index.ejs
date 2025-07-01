@@ -13,104 +13,109 @@
                 background-color: rgb(243, 242, 242);
             }
 
-            .root{
-                width: 40%;
-                margin-left: auto;
-                margin-right: auto;
-            }
-            
+            @media screen and (min-width: 768px) {
 
-            .login-form-container, .register-form-container{
-                box-shadow: 4px -1px 5px 10px rgba(0,0,0,0.03);
-                -webkit-box-shadow: 4px -1px 5px 10px rgba(0,0,0,0.03);
-                -moz-box-shadow: 4px -1px 5px 10px rgba(0,0,0,0.03);
-                background-color: rgb(255, 255, 255);
-                width: 40%;
-                margin-left: auto;
-                margin-right: auto;
+                .root{
+                    width: 50%;
+                    margin-left: auto;
+                    margin-right: auto;
+                }
                 
-                margin-bottom: 5%;
-                padding: 1%;
+
+                .login-form-container, .register-form-container{
+                    box-shadow: 4px -1px 5px 10px rgba(0,0,0,0.03);
+                    -webkit-box-shadow: 4px -1px 5px 10px rgba(0,0,0,0.03);
+                    -moz-box-shadow: 4px -1px 5px 10px rgba(0,0,0,0.03);
+                    background-color: rgb(255, 255, 255);
+                    width: 300px;
+                    margin-left: auto;
+                    margin-right: auto;
+                    
+                    margin-bottom: 5%;
+                    padding: 1%;
+
+                    
+                    border: 1px solid rgb(224, 224, 224);
+                    
+                    border-radius: 5px;
+                }
+
+                .login-form-container{
+                    margin-top: 5%;
+
+                }
+
 
                 
-                border-radius: 5px;
-            }
+                .controller-container, .controller-container-btn-only{
+                    padding: 1%;
+                }
 
-            .login-form-container{
-                margin-top: 5%;
+                .controller-container{
+                    
+                    margin-bottom: 2%;
+                }
+                .controller-container-btn-only{
 
-            }
+                    width: 75%;
+                    margin-left: auto;
+                    margin-right: auto;
+                    margin-bottom: 6%;
+                }
 
 
-            
-            .controller-container, .controller-container-btn-only{
-                padding: 1%;
-            }
-
-            .controller-container{
                 
-                margin-bottom: 2%;
-            }
-            .controller-container-btn-only{
-
-                width: 75%;
-                margin-left: auto;
-                margin-right: auto;
-                margin-bottom: 6%;
-            }
-
-
+                .register-form-container{
             
-            .register-form-container{
-          
 
-            }
+                }
 
-            .btn-controller-submit-type{
+                .btn-controller-submit-type{
 
-                background-color: rgba(9, 156, 34, 0.938);
-                border: 1px solid rgba(7, 146, 30, 0.938);
-                width: 100%;
-                padding: 1.5%;
-                border-radius: 3px;
-                color: aliceblue;
-                height: 2.5em;
+                    background-color: rgba(9, 156, 34, 0.938);
+                    border: 1px solid rgba(7, 146, 30, 0.938);
+                    width: 100%;
+                    padding: 1.5%;
+                    border-radius: 3px;
+                    color: aliceblue;
+                    height: 2.5em;
 
-            }
-            
-            .btn-controller-submit-type:hover{
+                }
+                
+                .btn-controller-submit-type:hover{
 
-                background-color: rgba(7, 146, 30, 0.938);
-                border: 1px solid rgba(7, 146, 30, 0.938);
-            }
+                    background-color: rgba(7, 146, 30, 0.938);
+                    border: 1px solid rgba(7, 146, 30, 0.938);
+                }
 
-            .txt-controller,.password-controller{
-                outline-color: rgb(82, 163, 255);
-                width: 95%;
-                padding: 1%;
-                font-size: 1.0em;  
-                border: 1px solid rgb(206, 206, 206);
+                .txt-controller,.password-controller{
+                    outline-color: rgb(82, 163, 255);
+                    width: 95%;
+                    padding: 1%;
+                    font-size: 1.0em;  
+                    border: 1px solid rgb(224, 224, 224);
 
-            } 
-            .txt-controller{
-                height: 1.5em;
+                } 
+                .txt-controller{
+                    height: 1.5em;
 
 
-            }
-            .password-controller{
-                height: 1.5em;
-  
+                }
+                .password-controller{
+                    height: 1.5em;
+    
 
 
-            }
-            
-            .form-title{
-                text-align: center;
-            }
+                }
+                
+                .form-title{
+                    text-align: center;
+                }
 
-            label{
-                font-weight: bold;
-                font-size: 0.9em;
+                label{
+                    font-weight: bold;
+                    font-size: 0.9em;
+                }
             }
         </style>
     </head>
@@ -169,45 +174,33 @@
             <% } %>
         </div>
     <script>
+
+        const ApiEndpoints = {
+            'login':"/api/v1/auth",
+            'logout':"/api/v1/auth/logout",
+            'register':"/api/v1/users/register",
+        }
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
-        // The logout button may or may not exist depending on if the user is logged in.
-        const logoutButton = document.getElementById('close-session'); 
+        const logoutButton = document.getElementById('close-session');
 
-        // Add event listener for login form if it exists
+        /* Event listeners */
         if (loginForm) {
-            loginForm.addEventListener('submit', (e) => {
+            loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
                 const username = document.getElementById('login-username').value;
                 const password = document.getElementById('login-password').value;
 
-                fetch('api/v1/auth/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, password })
-                })
-                .then(res => {
-                    if (res.ok) {
-                        setTimeout(() => {
-                            window.location.href = '/protected'; // Or '/protected' if that's your protected area
-                        }, 2000);
-                    } else {
-                        alert("Error logging in");
-                    }
-                })
-                .catch(error => {
-                    console.error('Login fetch error:', error);
-                    alert('An error occurred during login. Please try again.');
-                });
+                await loginService({ username, password }); 
+
+                // Lo ideal seria que cuando de un error, se recargue la pagina
+              
             });
         }
 
-        // Add event listener for register form if it exists
         if (registerForm) {
-            registerForm.addEventListener('submit', (e) => {
+            registerForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
                 const username = document.getElementById('register-username').value;
@@ -215,55 +208,120 @@
                 const confirmPassword = document.getElementById('register-confirm-password').value;
 
                 if (password !== confirmPassword) {
-                    alert("Passwords do not match");
-                    return;
+
+                    alert("Password doesn't match");
+                    
+                }else{
+                    // registerService will now throw an error on failure, which is caught here
+                    const response = await registerService({ username, password });
+
+                    if(response){
+                        alert("Register succesfully, redirecting")
+                        
+                        await loginService({ username, password }); 
+                    }
                 }
 
-                fetch('/register', {
+                
+            });
+        }
+
+        if (logoutButton) {
+            logoutButton.addEventListener('click', async (e) => {
+                e.preventDefault();
+
+                // logoutService 
+                await logoutService();
+
+            });
+        }
+
+
+        /* Services */
+        // All service functions now consistently throw errors on non-ok responses
+        // and return nothing (or `true`) on success.
+
+        async function loginService({ username, password }) {
+            try {
+                const response = await fetch(ApiEndpoints['login'], { 
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ username, password })
-                })
-                .then(res => {
-                    if (res.ok) {
-                        alert("Registration successful! You will be redirected.");
-                        setTimeout(() => {
-                            window.location.href = '/protected'; // Or '/protected'
-                        }, 2000);
-                    } else {
-                        alert("Error registering user");
-                    }
-                })
-                .catch(error => {
-                    console.error('Register fetch error:', error);
-                    alert('An error occurred during registration. Please try again.');
                 });
-            });
+                
+                if(response.status === 400){
+                    alert("Username or password incorrect! Try again") 
+                    redirectToHomeView()
+                }
+
+                if(response.status === 200){
+                    redirectToProtectedView()
+                }
+                
+
+            } catch (error) {
+                throw new Error('Server error. Try again'); // Throw a more general error for network issues
+            }
         }
 
-        // ONLY add event listener for logout button IF IT EXISTS in the DOM
-        if (logoutButton) { 
-            logoutButton.addEventListener('click', (e) => {
-                e.preventDefault();
+        async function logoutService() { // username, password are not needed for logout typically
+            try {
+                const response = await fetch(ApiEndpoints['logout'], { // Assuming /api/v1/auth/logout
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json' // Still good practice to send, though body is empty
+                    }
+                });
 
-                fetch('api/v1/auth/logout', {
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: 'Error server. Try again' }));
+                    throw new Error(errorData.message || 'Loggin error! Try again');
+                }
+
+                redirectToHomeView()
+
+            } catch (error) {
+                console.error('Logout error! Try again', error);
+                throw new Error('Loggin error! Try again');
+            }
+        }
+
+        async function registerService({ username, password }) {
+            try {
+                // !!! IMPORTANT: Verify this URL. If your register is handled by AuthRoutes,
+                // it should likely be '/api/v1/auth/register' to match your app.js mounting.
+                const response = await fetch(ApiEndpoints['register'], { 
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
-                    }
-                })
-                .then(res => {
-                    console.log(res);
-                    window.location.href = '/'; // Redirect to home after logout
-                })
-                .catch(error => {
-                    console.error('Logout fetch error:', error);
-                    alert('An error occurred during logout. Please try again.');
+                    },
+                    body: JSON.stringify({ username, password })
                 });
-            });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: 'Loggin error! Try again' }));
+                    throw new Error(errorData.message || 'Fallo al registrar.');
+                }
+
+                return true;
+
+            } catch (error) {
+                console.error('Loggin error! Try again', error);
+                throw new Error('Loggin error! Try again');
+            }
         }
+
+        /* Utility Functions */
+        function redirectToProtectedView() {
+            window.location.href = '/protected';
+        }
+
+        function redirectToHomeView() {
+            window.location.href = '/';
+        }
+        
     </script>
     </body>
 </html>
